@@ -1,13 +1,31 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import org.example.model.Expense;
+import org.example.model.ExpenseType;
+import org.example.registry.RuleRegistry;
+import org.example.service.impl.SimpleRuleEngineImpl;
+import org.example.service.rules.ExpenseRule;
+import org.example.service.rules.Violation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Rule Engine!!!");
 
+        List<Expense> expenses = new ArrayList<>();
+        SimpleRuleEngineImpl simpleRuleEngine = new SimpleRuleEngineImpl();
+        Map<ExpenseType, List<ExpenseRule>> expenseRuleRegistry = RuleRegistry.getExpenseRuleRegistry();
+        List<ExpenseRule> globalExpenseRuleRegistry = RuleRegistry.getGlobalExpenseRuleRegistry();
 
+        expenses.add(new Expense("001", "trip1", 80.0, ExpenseType.RESTAURANT, "Outback Roadhouse"));
+
+        List<Violation> violationList = simpleRuleEngine.evaluate(expenses, expenseRuleRegistry, globalExpenseRuleRegistry);
+
+        System.out.println("Expense Violations: ");
+        for(Violation violation: violationList){
+            System.out.println(violation.getMessage());
+        }
     }
 }
